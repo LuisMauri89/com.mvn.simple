@@ -25,78 +25,62 @@ public class CustomMowerHandler implements MowerHandler {
 	private List<Action> instructions = new ArrayList<>();
 	@Builder.Default
 	private OnInvalidMovementStrategy strategy = OnInvalidMovementStrategy.ALWAYS_HOLD_POSITION;
-	
+
 	@Override
 	public void execute(final int xSize, final int ySize, final List<Point> collisions) {
-		for(int i = 0; i < instructions.size(); i++) {
+		for (int i = 0; i < instructions.size(); i++) {
 			Action instructionToFollow = instructions.get(i);
-			
-			while (instructionToFollow != Action.HOLD_POSITION 
-					&& !isValidInstruction(instructions.get(i), 
-							mower.getPosition(), 
-							mower.getDirection(), 
-							collisions, 
-							xSize, ySize)) {
-				
+
+			while (instructionToFollow != Action.HOLD_POSITION && !isValidInstruction(instructions.get(i),
+					mower.getPosition(), mower.getDirection(), collisions, xSize, ySize)) {
+
+				/*
+				 * If strategy is other than ALWAYS_HOLD_POSITION will try to move in other
+				 * direction and resume original set of movements.
+				 */
 				Action onStrategy = followStrategy();
-				if(onStrategy == Action.HOLD_POSITION) {
+				if (onStrategy == Action.HOLD_POSITION) {
 					instructionToFollow = Action.HOLD_POSITION;
-				}else {
-					mower.headDirection(DirectionHelper.nextDirection(
-							onStrategy, 
-							mower.getDirection()));
+				} else {
+					mower.headDirection(DirectionHelper.nextDirection(onStrategy, mower.getDirection()));
 				}
 			}
-			
-			if(instructionToFollow == Action.HOLD_POSITION) {
+
+			if (instructionToFollow == Action.HOLD_POSITION) {
 				mower.printOnHold();
 				break;
 			}
-			
-			if(instructionToFollow == Action.MOVE_FORWARD) {
+
+			if (instructionToFollow == Action.MOVE_FORWARD) {
 				mower.moveTo(potentialMove(mower.getPosition(), mower.getDirection()));
-			}else {
-				mower.headDirection(DirectionHelper.nextDirection(
-						instructionToFollow, 
-						mower.getDirection()));
+			} else {
+				mower.headDirection(DirectionHelper.nextDirection(instructionToFollow, mower.getDirection()));
 			}
 		}
 	}
-	
+
 	@Override
 	public Point getPosition() {
 		return mower.getPosition();
 	}
-	
+
 	@Override
 	public Direction getDirection() {
 		return mower.getDirection();
 	}
-	
-	private boolean isValidInstruction(
-			final Action instruction, 
-			final Point position, 
-			final Direction direction, 
-			final List<Point> collisions, 
-			final int xSize, 
-			final int ySize) {
-		return isInRange(instruction, 
-				position, 
-				direction, 
-				xSize, ySize) 
-				&& isCollisionSave(instruction, 
-						position, 
-						direction, 
-						collisions);
+
+	private boolean isValidInstruction(final Action instruction, final Point position, final Direction direction,
+			final List<Point> collisions, final int xSize, final int ySize) {
+		return isInRange(instruction, position, direction, xSize, ySize)
+				&& isCollisionSave(instruction, position, direction, collisions);
 	}
-	
-	private boolean isInRange(
-			final Action instruction, 
-			final Point position, 
-			final Direction direction, 
-			final int xSize, 
-			final int ySize) {
-		if(instruction == Action.MOVE_FORWARD) {
+
+	/*
+	 * Checks if next movement is contained inside the bounds of the plateau's grid.
+	 */
+	private boolean isInRange(final Action instruction, final Point position, final Direction direction,
+			final int xSize, final int ySize) {
+		if (instruction == Action.MOVE_FORWARD) {
 			switch (direction) {
 			case NORTH:
 				return position.getY() + 1 <= ySize - 1;
@@ -108,27 +92,28 @@ public class CustomMowerHandler implements MowerHandler {
 				return position.getX() - 1 >= 0;
 			}
 		}
-		
+
 		return true;
 	}
-	
-	private boolean isCollisionSave(
-			final Action instruction, 
-			final Point position, 
-			final Direction direction, 
+
+	/*
+	 * Checks if next movement is not a collision with another mower's current
+	 * position.
+	 */
+	private boolean isCollisionSave(final Action instruction, final Point position, final Direction direction,
 			final List<Point> collisions) {
-		if(instruction == Action.MOVE_FORWARD) {
+		if (instruction == Action.MOVE_FORWARD) {
 			Point potentialMove = potentialMove(position, direction);
 			return !collisions.contains(potentialMove);
 		}
-		
+
 		return true;
 	}
-	
+
 	private Point potentialMove(final Point position, final Direction direction) {
 		int x = (int) position.getX();
 		int y = (int) position.getY();
-		
+
 		switch (direction) {
 		case NORTH:
 			return new Point(x, y + 1);
@@ -142,7 +127,7 @@ public class CustomMowerHandler implements MowerHandler {
 			return null;
 		}
 	}
-	
+
 	private Action followStrategy() {
 		switch (strategy) {
 		case ALWAYS_TURN_LEFT:

@@ -4,8 +4,11 @@ import com.mvn.simple.infrastructure.util.Action;
 import com.mvn.simple.infrastructure.util.Direction;
 import com.mvn.simple.infrastructure.util.OnInvalidMovementStrategy;
 
+/*
+ * Helpers to parse input string into DTO properties.
+ */
 public class LocationMapper {
-	
+
 	public Action toAction(final String instruction) {
 		switch (instruction) {
 		case "L":
@@ -18,7 +21,7 @@ public class LocationMapper {
 			throw new IllegalArgumentException("Error unexpected value: " + instruction);
 		}
 	}
-	
+
 	public Direction toDirection(final String direction) {
 		switch (direction) {
 		case "N":
@@ -33,7 +36,7 @@ public class LocationMapper {
 			throw new IllegalArgumentException("Error unexpected value: " + direction);
 		}
 	}
-	
+
 	public OnInvalidMovementStrategy toStrategy(final String strategy) {
 		switch (strategy) {
 		case "ATL":

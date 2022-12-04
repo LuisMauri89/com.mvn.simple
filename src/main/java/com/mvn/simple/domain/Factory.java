@@ -15,8 +15,15 @@ import lombok.NoArgsConstructor;
 public class Factory {
 	@Builder.Default
 	private List<Deployment> deployments = new ArrayList<>();
-	
+
+	/*
+	 * Each deployment represents a simulation of a single green grass plateau with
+	 * its group of mowers.
+	 */
 	public void runDeployments() {
-		deployments.forEach(deployment -> deployment.deploy());
+		deployments.forEach(deployment -> { 
+			deployment.deploy();
+			System.out.println(" ");
+		});
 	}
 }

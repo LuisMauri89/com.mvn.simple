@@ -24,26 +24,31 @@ public class CustomDeployment implements Deployment {
 	@Builder.Default
 	private List<MowerHandler> mowersHandlers = new ArrayList<>();
 	private CollisionsMapper collisionsMapper;
-	
+
 	@Override
 	public void deploy() {
 		mowersHandlers.forEach(mowersHandler -> {
-			if(!isValidDeployment()) {
-				System.out.println("Deployment will be ignore due to collisions problems in the initial set of mower's positions");
+			if (!isValidDeployment()) {
+				System.out.println(
+						"Deployment will be ignore due to collisions problems in the initial set of mower's positions");
 				return;
 			}
-			
+
 			List<Point> collisions = collisionsMapper.toCollisions(mowersHandlers, mowersHandler);
 			mowersHandler.execute(xSize, ySize, collisions);
 		});
 	}
 	
+	/*
+	 * Check if there is not collision among all the initial positions of the
+	 * mowers.
+	 */
 	private boolean isValidDeployment() {
 		Set<Point> positions = new HashSet<Point>();
-		
-		for(int i = 0; i < mowersHandlers.size(); i++) {
+
+		for (int i = 0; i < mowersHandlers.size(); i++) {
 			boolean isNew = positions.add(mowersHandlers.get(i).getPosition());
-			if(!isNew) {
+			if (!isNew) {
 				return false;
 			}
 		}

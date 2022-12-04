@@ -15,11 +15,13 @@ import com.mvn.simple.usecase.model.DeploymentInfo;
 
 public class FactoryBuilder {
 
-	public static Factory buildFactory(
-			final String deploymentsPath, 
-			final DeploymentMapper deploymentMapper,
-			final LocationMapper locationMapper, 
-			final CollisionsMapper collisionsMapper) throws Exception {
+	/*
+	 * Locate the cases parent directory under 'deploymentsPath', reads every file
+	 * as a different case to run, converts each file's information into separated
+	 * deployment/case.
+	 */
+	public static Factory buildFactory(final String deploymentsPath, final DeploymentMapper deploymentMapper,
+			final LocationMapper locationMapper, final CollisionsMapper collisionsMapper) throws Exception {
 		List<DeploymentInfo> deploymentsInfo = new ArrayList<>();
 
 		File deploymentsDirectory = new File(deploymentsPath);
@@ -29,7 +31,7 @@ public class FactoryBuilder {
 			if (deploymentFiles[i].isFile()) {
 				DeploymentInfo info = DeploymentInfo.builder().build();
 				info.setName(deploymentFiles[i].getName());
-				
+
 				try {
 					BufferedReader reader = new BufferedReader(new FileReader(deploymentFiles[i]));
 					String line = reader.readLine();
@@ -51,21 +53,17 @@ public class FactoryBuilder {
 				}
 			}
 		}
-		
+
 		List<Deployment> customDeployments = new ArrayList<>();
-		for(int i = 0; i < deploymentsInfo.size(); i++) {
+		for (int i = 0; i < deploymentsInfo.size(); i++) {
 			try {
-				customDeployments.add(deploymentMapper.toCustomDeployment(
-						deploymentsInfo.get(i), 
-						locationMapper, 
-						collisionsMapper));
+				customDeployments.add(
+						deploymentMapper.toCustomDeployment(deploymentsInfo.get(i), locationMapper, collisionsMapper));
 			} catch (Exception e) {
 				throw new Exception("Error parsing input file | " + e.getMessage(), e);
 			}
 		}
 
-		return Factory.builder()
-				.deployments(customDeployments)
-				.build();
+		return Factory.builder().deployments(customDeployments).build();
 	}
 }

@@ -11,21 +11,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class RoboticMower implements Mower{
+public class RoboticMower implements Mower {
 	private Point currentPosition;
 	private Direction direction;
-	
+
 	@Override
 	public void moveTo(final Point position) {
 		currentPosition = position;
 	}
-	
+
 	@Override
 	public void headDirection(final Direction direction) {
 		this.direction = direction;
-		
+
 	}
-	
+
 	@Override
 	public Point getPosition() {
 		return currentPosition;
@@ -33,11 +33,8 @@ public class RoboticMower implements Mower{
 
 	@Override
 	public void printOnHold() {
-		System.out.println(String.format("%s %s %s", 
-				(int) currentPosition.getX(), 
-				(int) currentPosition.getY(), 
+		System.out.println(String.format("%s %s %s", (int) currentPosition.getX(), (int) currentPosition.getY(),
 				direction.toString().charAt(0)));
 	}
-	
-	
+
 }
