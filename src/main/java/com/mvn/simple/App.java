@@ -18,10 +18,19 @@ public class App {
 		CollisionsMapper collisionsMapper = new CollisionsMapper();
 
 		/*
-		 * Uses the first argument passed to the application as the path to locate a folder
-		 * with files containing the cases to run.
+		 * Uses the first argument passed to the application as the path to locate a
+		 * folder with files containing the cases to run.
 		 */
 		Factory factory = FactoryBuilder.buildFactory(args[0], deploymentMapper, locationMapper, collisionsMapper);
+
+		/*
+		 * Uncomment this to run directly from here (in that case comment previous
+		 * line). Replace below the path to the parent folder of the cases.
+		 */
+		// Factory factory =
+		// FactoryBuilder.buildFactory("/absolute/path/to/the/cases/folder",
+		// deploymentMapper, locationMapper, collisionsMapper);
+
 		factory.runDeployments();
 	}
 }
