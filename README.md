@@ -27,6 +27,16 @@ MMRMMRMRRM
 ```
 It can be more than one file, the application will read them all as different cases and run them sequentially.
 
+It can be set with an extra strategy to keep moving by changing direction in case of out of bound movement or collision, just add ATR (ALWAYS_TURN_RIGHT) or ATL (ALWAYS_TURN_LEFT) after de direction and the program will act based on that, the strategy by default is ALWAYS_HOLD_POSITION.
+
+```
+5 5
+1 2 N ATL
+LMLMLMLMM
+```
+
+These are just simple strategies, more complex strategies can be implemented using more complex structures, like variants of shortest path to surround another mower.
+
 ## Run
 
 Build the project
